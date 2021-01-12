@@ -21,8 +21,7 @@ echo "Found $(ls tmp/video | wc -l) videos to process."
 echo "Converting videos to images..."
 for VID_FILE in $(ls tmp/video)
 do
-    NEW_NAME="${VID_FILE%.*}-%04d.jpg"
-    ffmpeg -i $VID_FILE $NEW_NAME
+    ffmpeg -i tmp/video/$VID_FILE "tmp/images/${VID_FILE%.*}-%04d.jpg"
 done
 
 
@@ -38,8 +37,7 @@ echo ""
 echo "Converting videos to half-size images..."
 for VID_FILE in $(ls tmp/video)
 do
-    NEW_NAME="${VID_FILE%.*}-%04d.jpg"
-    ffmpeg -i $VID_FILE -s 960x540 $NEW_NAME
+    ffmpeg -i tmp/video/$VID_FILE -s 960x540 "tmp/images/${VID_FILE%.*}-%04d.jpg"
 done
 
 echo ""
@@ -64,6 +62,8 @@ echo "Cleaning up..."
 rm -r tmp/
 [ -d __pycache__ ] && rm -r __pycache__
 docker stop $MONGO_ID
+docker wait $MONGO_ID
+docker rm -f $MONGO_ID
 
 echo "Done."
 
